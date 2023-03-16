@@ -1,4 +1,5 @@
 <?php
+
 namespace Imefisto\PsrSwoole\Testing;
 
 use Imefisto\PsrSwoole\Request;
@@ -415,8 +416,20 @@ class RequestTest extends TestCase
      */
     public function withAddedHeaderAddsToPreviousHeader()
     {
-        $request = $this->buildRequest()
-                        ->withAddedHeader('foo', 'bar');
+        $request = $this->buildRequest()->withAddedHeader('foo', 'bar');
+
+        $new = $request->withAddedHeader('foo', 'bar2');
+        $this->assertEquals(['bar', 'bar2'], $new->getHeader('foo'));
+        $this->assertImmutabililty($request, $new);
+        $this->assertEquals(['bar'], $request->getHeader('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function withAddedHeaderAddsArrayToPreviousHeader()
+    {
+        $request = $this->buildRequest()->withAddedHeader('foo', ['bar']);
 
         $new = $request->withAddedHeader('foo', 'bar2');
         $this->assertEquals(['bar', 'bar2'], $new->getHeader('foo'));
@@ -456,7 +469,27 @@ class RequestTest extends TestCase
 
         $new = $request->withoutHeader('fOo');
         $this->assertFalse($new->hasHeader('foo'));
+        $this->assertImmutabililty($request, $new);
     }
+
+    /**
+     * @test
+     */
+    public function withoutHeaderMissing()
+    {
+        $headers = [
+            'foo' => ['bar', 'bar2'],
+        ];
+
+        $request = $this->buildRequest();
+        $request->swooleRequest->header = $headers;
+
+        $new = $request->withoutHeader('f0o');
+        $this->assertTrue($new->hasHeader('foo'));
+        $this->assertFalse($new->hasHeader('f0o'));
+        $this->assertImmutabililty($request, $new);
+    }
+
 
     /**
      * @test
@@ -503,8 +536,8 @@ class RequestTest extends TestCase
     ) {
         return new Request(
             $this->buildSwooleRequest($uri, $method, $postBody),
-            new Psr17Factory,
-            new Psr17Factory
+            new Psr17Factory(),
+            new Psr17Factory()
         );
     }
 

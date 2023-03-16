@@ -1,4 +1,5 @@
 <?php
+
 namespace Imefisto\PsrSwoole;
 
 use Psr\Http\Message\RequestInterface;
@@ -6,21 +7,23 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;
-use Swoole\Http\Request as SwooleRequest;
+use OpenSwoole\Http\Request as SwooleRequest;
 
 #[\AllowDynamicProperties]
 class Request implements RequestInterface
 {
-    private $headers = null;
+    protected array|null $headers = null;
+    protected string $requestTarget;
+    protected string $method;
+    protected UriInterface $uri;
+    protected string $protocol;
+    protected StreamInterface $body;
 
     public function __construct(
-        SwooleRequest $swooleRequest,
-        UriFactoryInterface $uriFactory,
-        StreamFactoryInterface $streamFactory
+        public readonly SwooleRequest $swooleRequest,
+        protected UriFactoryInterface $uriFactory,
+        protected StreamFactoryInterface $streamFactory
     ) {
-        $this->swooleRequest = $swooleRequest;
-        $this->uriFactory = $uriFactory;
-        $this->streamFactory = $streamFactory;
     }
 
     public function getRequestTarget()
@@ -138,7 +141,8 @@ class Request implements RequestInterface
         $headers = is_array($this->headers)
             ? $this->headers
             : $this->swooleRequest->header;
-        return array_map(function($value) {
+
+        return array_map(function ($value) {
             return is_array($value) ? $value : [$value];
         }, $headers);
     }
@@ -152,7 +156,7 @@ class Request implements RequestInterface
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -180,7 +184,7 @@ class Request implements RequestInterface
             }
         }
     }
-    
+
     public function getHeaderLine($name)
     {
         return \implode(',', $this->getHeader($name));

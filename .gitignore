@@ -3,3 +3,5 @@
 vendor
 /build/
 /infection.log
+.lh
+.vscode

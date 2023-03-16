@@ -1,7 +1,8 @@
 <?php
+
 namespace Imefisto\PsrSwoole\Testing;
 
-use Swoole\Http\Request as SwooleRequest;
+use OpenSwoole\Http\Request as SwooleRequest;
 
 trait SwooleRequestBuilderTrait
 {
@@ -27,7 +28,7 @@ trait SwooleRequestBuilderTrait
     private function mockRawContent($swooleRequest)
     {
         if (empty($swooleRequest->post)) {
-            return null;
+            return false;
         }
 
         return http_build_query($swooleRequest->post);

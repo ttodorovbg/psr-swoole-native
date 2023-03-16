@@ -1,15 +1,15 @@
 <?php
+
 namespace Imefisto\PsrSwoole;
 
 use Psr\Http\Message\ResponseInterface;
-use Swoole\Http\Response;
+use OpenSwoole\Http\Response;
 use Dflydev\FigCookies\SetCookies;
 
 class ResponseMerger
 {
     public const FSTAT_MODE_S_IFIFO = 0010000;
     public const BUFFER_SIZE = 8192;
-
     protected const FILES_STREAM_TYPE = 'STDIO';
     protected const FILES_WRAPPER_TYPE = 'plainfile';
 
@@ -31,7 +31,7 @@ class ResponseMerger
         $this->setCookies($swooleResponse, $psrResponse);
 
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
-        
+
         foreach ($psrResponse->getHeaders() as $key => $headerArray) {
             $swooleResponse->header($key, implode('; ', $headerArray));
         }
@@ -64,7 +64,7 @@ class ResponseMerger
             return explode('=', strtolower($sameSite->asString()))[1];
         }
 
-        return null;
+        return '';
     }
 
     private function copyBody($psrResponse, $swooleResponse)
@@ -111,8 +111,8 @@ class ResponseMerger
 
     private function isFileStreamInBody(ResponseInterface $psrResponse): bool
     {
-        $streamType = explode('/', $psrResponse->getBody()->getMetadata('stream_type'))[0] ?? '';
-        $wrapperType = explode('/', $psrResponse->getBody()->getMetadata('wrapper_type'))[0] ?? '';
+        $streamType = explode('/', $psrResponse->getBody()->getMetadata('stream_type') ?? '')[0] ?? '';
+        $wrapperType = explode('/', $psrResponse->getBody()->getMetadata('wrapper_type') ?? '')[0] ?? '';
 
         return
             $streamType === static::FILES_STREAM_TYPE &&

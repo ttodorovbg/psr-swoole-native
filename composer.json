@@ -1,5 +1,5 @@
 {
-  "name": "imefisto/psr-swoole-native",
+  "name": "imefisto/openswoole-psr7-php81",
   "authors": [
     {
       "name": "Ignacio El Kadre",
@@ -18,20 +18,27 @@
     }
   },
   "require": {
-    "php": "^7.2 || ^8.0",
+    "php": "^8.1",
     "psr/http-message": "^1.0",
     "psr/http-factory": "^1.0",
-    "dflydev/fig-cookies": "^2.0 || ^3.0"
+    "dflydev/fig-cookies": "^3.0",
+    "squizlabs/php_codesniffer": "*",
+    "infection/infection": "^0.26.16"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.5",
+    "phpunit/phpunit": "^9.5",
     "nyholm/psr7": "^1.0",
-    "swoole/ide-helper": "^4.8"
+    "openswoole/ide-helper": "^22.0"
   },
   "scripts": {
     "test": "./vendor/bin/phpunit --configuration phpunit.xml",
     "test:coverage": "./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover build/logs/clover.xml --log-junit build/logs/junit.xml --coverage-html build/coverage",
     "sniff": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests examples",
     "format": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests examples"
+  },
+  "config": {
+    "allow-plugins": {
+      "infection/extension-installer": true
+    }
   }
 }

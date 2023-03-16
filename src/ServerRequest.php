@@ -1,17 +1,23 @@
 <?php
+
 namespace Imefisto\PsrSwoole;
 
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Psr\Http\Message\UriInterface;
-use Swoole\Http\Request as SwooleRequest;
+use OpenSwoole\Http\Request as SwooleRequest;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
     public $attributes = [];
+
+    protected UploadedFileFactoryInterface $uploadedFileFactory;
+    protected array $cookies;
+    protected array|null $query;
+    protected array|null $files = null;
+    protected object|array|null $parsedBody;
+    protected bool $isBodyParsed = false;
 
     public function __construct(
         SwooleRequest $swooleRequest,
@@ -82,10 +88,10 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     public function getParsedBody()
     {
-        if (property_exists($this, 'parsedBody')) {
+        if ($this->isBodyParsed) {
             return $this->parsedBody;
         }
-        
+
         if (!empty($this->swooleRequest->post)) {
             return $this->swooleRequest->post;
         }
@@ -101,6 +107,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         $new = clone $this;
         $new->parsedBody = $data;
+        $new->isBodyParsed = true;
+
         return $new;
     }
 

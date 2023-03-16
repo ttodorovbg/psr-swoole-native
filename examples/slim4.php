@@ -1,10 +1,11 @@
 <?php
+
 use Imefisto\PsrSwoole\ServerRequest as PsrRequest;
 use Imefisto\PsrSwoole\ResponseMerger;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Slim\Factory\AppFactory;
-use Swoole\Http\Request;
-use Swoole\Http\Response;
+use OpenSwoole\Http\Request;
+use OpenSwoole\Http\Response;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -21,12 +22,12 @@ $app->get('/', function ($request, $response, $args) {
     return $response;
 });
 
-$http = new swoole_http_server("0.0.0.0", 9501);
-$uriFactory = new Psr17Factory;
-$streamFactory = new Psr17Factory;
-$responseFactory = new Psr17Factory;
-$uploadedFileFactory = new Psr17Factory;
-$responseMerger = new ResponseMerger;
+$http = new OpenSwoole\HTTP\Server("0.0.0.0", 9501);
+$uriFactory = new Psr17Factory();
+$streamFactory = new Psr17Factory();
+$responseFactory = new Psr17Factory();
+$uploadedFileFactory = new Psr17Factory();
+$responseMerger = new ResponseMerger();
 
 $http->on(
     'request',

@@ -1,4 +1,5 @@
 <?php
+
 namespace Imefisto\PsrSwoole\Testing;
 
 use PHPUnit\Framework\TestCase;
@@ -20,9 +21,9 @@ class ServerRequestTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->uriFactory = new Psr17Factory;
-        $this->streamFactory = new Psr17Factory;
-        $this->uploadedFileFactory = new Psr17Factory;
+        $this->uriFactory = new Psr17Factory();
+        $this->streamFactory = new Psr17Factory();
+        $this->uploadedFileFactory = new Psr17Factory();
     }
 
     /**
@@ -125,7 +126,7 @@ class ServerRequestTest extends TestCase
                 'error' => 0
             ]
         ];
-            
+
         $this->assertNotEmpty($request->getUploadedFiles());
 
         foreach ($request->getUploadedFiles() as $file) {
@@ -153,7 +154,7 @@ class ServerRequestTest extends TestCase
                 'application/pdf'
             )
         ]);
-            
+
         $this->assertNotEmpty($new->getUploadedFiles());
 
         foreach ($new->getUploadedFiles() as $file) {
@@ -198,6 +199,7 @@ class ServerRequestTest extends TestCase
         $request->swooleRequest->post = [
             'test' => 1
         ];
+
         $newPost = ['test' => 2];
         $new = $request->withParsedBody($newPost);
         $this->assertEquals($newPost, $new->getParsedBody());
@@ -213,7 +215,7 @@ class ServerRequestTest extends TestCase
         $request->swooleRequest->post = [
             'test' => 1
         ];
-        $newPost = new \stdclass;
+        $newPost = new \stdclass();
         $newPost->test = 2;
         $new = $request->withParsedBody($newPost);
         $this->assertEquals($newPost, $new->getParsedBody());
